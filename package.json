@@ -2,7 +2,7 @@
   "name": "@qhub/public-api",
   "version": "0.0.0",
   "main": "src/index.d.ts",
-  "types": "src/index.d.ts",
+  "types": "lib/index.js",
   "files": [
     "src/*.d.ts"
   ],
