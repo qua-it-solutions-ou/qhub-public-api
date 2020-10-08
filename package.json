@@ -6,9 +6,6 @@
   "scripts": {
     "install": "tsc"
   },
-  "bin": {
-    "qhub-sdk": "lib/sdk/bin.js"
-  },
   "files": [
     "src/*.d.ts"
   ],
