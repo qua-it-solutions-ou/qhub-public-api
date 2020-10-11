@@ -13,7 +13,7 @@ yargs
             yargs =>
                 yargs
                     .string('root').default('root', '.')
-                    .string('output'),
+                    .string('output').array('output'),
         async args => {
             const root = path.resolve(args.root);
 
@@ -22,12 +22,18 @@ yargs
 
             const name = packageJson.name as string;
 
-            const output = args.output ?? path.resolve(root, name + '.plugin');
+            let output = args.output ?? path.resolve(root, name + '.plugin');
+            if (!Array.isArray(output)) {
+                output = [output];
+            }
 
             const packed = await generatePack(root);
 
-            console.log('Generated plugin pack successfully. Saving the file: ' + output);
-            fs.writeFileSync(output, packed);
+            console.log('Generated plugin pack successfully.');
+            for (const outputPath of output) {
+                console.log('Saving the file: ' + outputPath);
+                fs.writeFileSync(outputPath, packed);
+            }
         }
     )
     .demandCommand(1, 1)
