@@ -2,6 +2,7 @@ import {Highway} from './highway';
 import {PluginManagerHighway} from './plugins';
 import {ConnectionIdentifier, ConnectionManagerHighway} from './connections';
 import {DomainsHighway} from './domains';
+import {WindowManagerHighway} from './window';
 
 export type UIPluginHighway = HubPluginHighway & {
     namespace(line: 'ui-plugin-manager'): PluginManagerHighway;
@@ -11,6 +12,7 @@ export type HubPluginHighway = Highway & {
     namespace(line: 'connection-manager'): ConnectionManagerHighway;
     namespace(line: 'connection'): ConnectionNamespaceHighway;
     namespace(line: 'domains'): DomainsHighway;
+    namespace(line: 'window-manager'): WindowManagerHighway;
 };
 
 export type NodeHighway = Highway & {
