@@ -12,4 +12,6 @@ export type PluginManagerHighway = Highway & {
     request(line: 'instance/info', id: PluginInstanceIdentifier): Promise<PluginInfo>;
     observe(line: 'instance/active', id: PluginInstanceIdentifier): Observable<boolean>;
     observe(line: 'instance/ready', id: PluginInstanceIdentifier): Observable<boolean>;
+    request(line: 'active-instances'): Promise<PluginInstanceIdentifier[]>;
+    request(line: 'instance/pack', id: PluginInstanceIdentifier): Promise<Buffer>;
 };
