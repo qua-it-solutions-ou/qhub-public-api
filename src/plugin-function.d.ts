@@ -2,7 +2,7 @@ import {Highway} from './highway';
 import {PluginManagerHighway} from './plugins';
 import {ConnectionIdentifier, ConnectionManagerHighway} from './connections';
 import {DomainsHighway} from './domains';
-import {WindowManagerHighway} from './window';
+import {WindowIdentifier, WindowManagerHighway} from './window';
 import {CertificationManagerHighway} from './certifications';
 import {UpdateManagerHighway} from './updates';
 
@@ -33,7 +33,8 @@ export interface HubPluginHandles {
 }
 
 export interface UIPluginHandles extends HubPluginHandles {
-    highway: UIPluginHighway
+    highway: UIPluginHighway,
+    windowIdentifier: WindowIdentifier
 }
 
 export interface NodePluginFunction {
