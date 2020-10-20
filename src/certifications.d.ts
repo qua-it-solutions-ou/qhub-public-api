@@ -1,5 +1,6 @@
 import {Highway} from './highway';
 import {Observable} from 'rxjs';
+import {Domains} from './domains';
 
 export type CertificationErrorCode = 'unknown' | 'challenge-failed' | 'no-subscription';
 export type CertificationStatus = {
@@ -13,7 +14,7 @@ export type CertificationStatus = {
 } | {
     code: 'error',
     errorCode: CertificationErrorCode,
-    errorDomains: string[],
+    errorDomains: Domains,
     retryAt: Date
 } | {
     code: 'no-domain'
