@@ -18,6 +18,6 @@
     "@types/glob": "^7.1.3"
   },
   "publishConfig": {
-    "@qhub:registry":"https://gitlab.qua.one/api/v4/projects/qhub%2fpublic-api/packages/npm/"
+    "@qhub:registry":"https://gitlab.qua.one/api/v4/projects/31/packages/npm/"
   }
 }
