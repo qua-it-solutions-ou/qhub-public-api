@@ -1,0 +1,6 @@
+publish:
+  image: node:14
+  cache:
+    untracked: true
+  script:
+    - npm publish
