@@ -1,6 +1,8 @@
 {
   "name": "@qhub/public-api",
-  "version": "0.0.0-2",
+  "repository": "https://gitlab.qua.one/qhub/public-api/",
+  "license": "UNLICENSED",
+  "version": "0.0.0-3",
   "types": "src/index.d.ts",
   "main": "lib/dummy.js",
   "files": [
@@ -8,7 +10,7 @@
     "lib/**/*.js"
   ],
   "scripts": {
-    "install": "tsc"
+    "prepare": "tsc"
   },
   "dependencies": {
     "jszip": "^3.5.0",
@@ -21,6 +23,6 @@
     "@types/glob": "^7.1.3"
   },
   "publishConfig": {
-    "@qhub:registry":"https://gitlab.qua.one/api/v4/projects/qhub%2fpublic-api/packages/npm/"
+    "@qhub:registry": "https://gitlab.qua.one/api/v4/projects/qhub%2fpublic-api/packages/npm/"
   }
 }
