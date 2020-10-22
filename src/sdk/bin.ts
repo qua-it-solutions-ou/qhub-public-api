@@ -8,6 +8,7 @@ import {generatePack} from './pack';
 
 yargs
     .usage('Usage: qhub-sdk <command> [options]')
+    .scriptName('qhub-sdk')
     .command(
         'pack', 'Pack the QHub plugin with its resources',
             yargs =>
