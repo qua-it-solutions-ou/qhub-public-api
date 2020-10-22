@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "types": "src/index.d.ts",
   "main": "lib/dummy.js",
+  "files": [
+    "src/**/*.d.ts",
+    "lib/**/*.js"
+  ],
   "scripts": {
     "install": "tsc",
     "prepublish": "tsc"
