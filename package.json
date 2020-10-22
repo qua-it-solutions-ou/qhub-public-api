@@ -1,6 +1,6 @@
 {
   "name": "@qhub/public-api",
-  "version": "0.0.0-0",
+  "version": "0.0.0-1",
   "types": "src/index.d.ts",
   "main": "lib/dummy.js",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "install": "tsc",
-    "prepublish": "tsc"
+    "prepare": "tsc"
   },
   "dependencies": {
     "jszip": "^3.5.0",
