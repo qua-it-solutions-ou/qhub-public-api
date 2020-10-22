@@ -8,8 +8,7 @@
     "lib/**/*.js"
   ],
   "scripts": {
-    "install": "tsc",
-    "prepare": "tsc"
+    "install": "tsc"
   },
   "dependencies": {
     "jszip": "^3.5.0",

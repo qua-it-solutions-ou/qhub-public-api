@@ -3,4 +3,5 @@ publish:
   cache:
     untracked: true
   script:
+    - npm install
     - npm publish
