@@ -1,5 +1,6 @@
 import {Highway} from './highway';
 import {Observable} from 'rxjs';
+import {ResourceFile} from "./sdk/plugin-system";
 
 export type PluginInstanceIdentifier = number;
 export interface PluginInfo {
@@ -15,4 +16,5 @@ export type PluginManagerHighway = Highway & {
     request(line: 'active-instances'): Promise<PluginInstanceIdentifier[]>;
     observe(line: 'active-instances'): Observable<PluginInstanceIdentifier[]>;
     request(line: 'instance/pack', id: PluginInstanceIdentifier): Promise<Buffer>;
+    request(line: 'instance/resource', id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
 };
