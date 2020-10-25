@@ -1,6 +1,11 @@
 import {Highway} from './highway';
 import {Observable} from 'rxjs';
-import {ResourceFile} from "./sdk/plugin-system";
+
+export interface ResourceDirectory {
+    [entry: string]: Resource
+}
+export type ResourceFile = Buffer;
+export type Resource = ResourceDirectory | ResourceFile;
 
 export type PluginInstanceIdentifier = number;
 export interface PluginInfo {

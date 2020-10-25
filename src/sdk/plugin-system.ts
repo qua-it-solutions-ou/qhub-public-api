@@ -1,10 +1,5 @@
 import JSZip from 'jszip';
-
-export interface ResourceDirectory {
-    [entry: string]: Resource
-}
-export type ResourceFile = Buffer;
-export type Resource = ResourceDirectory | ResourceFile;
+import {ResourceDirectory, ResourceFile} from "../plugins";
 
 export interface PluginPackData {
     name: string,
