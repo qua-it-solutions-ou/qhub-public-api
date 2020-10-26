@@ -7,4 +7,6 @@ export * from './window';
 export * from './certifications';
 export * from './updates';
 export * from './ui';
+export * from './hub';
+export * from './node';
 export * from './common';
