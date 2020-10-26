@@ -12,3 +12,9 @@ export function useTitle(): [
 ];
 
 export function useWindowID(): WindowIdentifier;
+
+export function Translation(
+    props: {path: string | string[]} | {children: string | string[]}
+): JSX.Element;
+
+export const uiHighway: UIPluginHighway;
