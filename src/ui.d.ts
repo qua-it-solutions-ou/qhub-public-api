@@ -1,5 +1,6 @@
 import {UIPluginHighway} from "./plugin-function";
 import {WindowIdentifier} from "./window";
+import {ReactElement} from "react";
 
 export type ResponsiveSize = 'smaller' | 'larger';
 
@@ -15,6 +16,6 @@ export function useWindowID(): WindowIdentifier;
 
 export function Translation(
     props: {path: string | string[]} | {children: string | string[]}
-): JSX.Element;
+): ReactElement<any, any>;
 
 export const uiHighway: UIPluginHighway;
