@@ -10,3 +10,4 @@ export * from './ui';
 export * from './hub';
 export * from './node';
 export * from './common';
+export * from './supervised';

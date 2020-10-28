@@ -24,15 +24,23 @@ export type NodeHighway = Highway & {
 };
 export type NodePluginHighway = NodeHighway;
 
-export interface NodePluginHandles {
+export interface StandardPluginHandles {
+    setReady(ready: boolean): void;
+}
+
+export interface SupervisorPluginHandles {
+    feedWatchdog(): void;
+}
+
+export interface NodePluginHandles extends SupervisorPluginHandles, StandardPluginHandles {
     highway: NodePluginHighway
 }
 
-export interface HubPluginHandles {
+export interface HubPluginHandles extends SupervisorPluginHandles, StandardPluginHandles  {
     highway: HubPluginHighway
 }
 
-export interface UIPluginHandles extends HubPluginHandles {
+export interface UIPluginHandles extends StandardPluginHandles {
     highway: UIPluginHighway,
     windowIdentifier: WindowIdentifier
 }
