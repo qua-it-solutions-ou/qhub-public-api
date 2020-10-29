@@ -2,9 +2,9 @@
   "name": "@qhub/public-api",
   "repository": "https://gitlab.qua.one/qhub/public-api/",
   "license": "UNLICENSED",
-  "version": "0.0.0-22",
+  "version": "0.0.0-23",
   "types": "src/index.d.ts",
-  "main": "lib/dummy.js",
+  "main": "lib/index.js",
   "bin": {
     "qhub-sdk": "lib/sdk/bin.js"
   },
