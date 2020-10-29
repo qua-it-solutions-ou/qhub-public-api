@@ -8,6 +8,6 @@ export type ConnectionManagerHighway = AutoProxy<{
     'new-connection'(): ConnectionIdentifier;
     'available-connection'(): ConnectionIdentifier; // all available connections + every next new-connection
     connection: {
-        availability(): Observable<boolean> | Promise<boolean | undefined>
+        availability(connectionID: ConnectionIdentifier): Observable<boolean> | Promise<boolean | undefined>
     }
 }>;
