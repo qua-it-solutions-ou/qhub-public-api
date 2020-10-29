@@ -41,6 +41,16 @@ export type PromiseResultFrom<T extends ProxyReturnType> = T extends PromiseResu
 export type ObservableResultFrom<T extends ProxyReturnType> = T extends ObservableResult<any> ? T : AutoObservableResult<Extract<T, any>>;
 export type StreamResultFrom<T extends ProxyReturnType> = T extends StreamResult ? T : Extract<T, StreamResult>;
 
+export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, ProxyReturnType>> = {
+    response(...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
+} | {
+    emit(...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
+} | {
+    stream(...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
+} | (
+    (...args: Parameters<FUNC>) => StreamResultFrom<ReturnType<FUNC>> | ObservableResultFrom<ReturnType<FUNC>> | PromiseResultFrom<ReturnType<FUNC>>
+);
+
 export interface LineProxy<FUNC extends LineProxyFunction<Arguments, ProxyReturnType> = LineProxyFunction<Arguments, ProxyReturnType>> {
     [namespacePart: string]: LineProxy,
 
@@ -49,7 +59,7 @@ export interface LineProxy<FUNC extends LineProxyFunction<Arguments, ProxyReturn
     [Observe](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
     [ObserveAll](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
     [Stream](...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
-    [Register](...args: Parameters<FUNC>): Bus;
+    [Register](driver: LineProxyDriver<FUNC>): Bus;
 }
 
 export type AutoProxyStructMap = {
