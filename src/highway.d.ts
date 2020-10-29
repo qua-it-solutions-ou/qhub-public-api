@@ -78,8 +78,8 @@ export type AutoProxyStruct =
     LineProxyFunction<any, any> | AutoProxyStructMap;
 
 export type AutoProxy<STRUCT extends AutoProxyStruct> =(
-    STRUCT extends LineProxyFunction<any, any> ? LineProxy<STRUCT> : (
-        STRUCT extends LineProxy ? STRUCT : (
+    STRUCT extends LineProxy ? STRUCT : (
+        STRUCT extends LineProxyFunction<any, any> ? LineProxy<STRUCT> : (
             STRUCT extends AutoProxyStructMap ? (
                 LineProxy & {[namespacePart in keyof STRUCT]: AutoProxy<STRUCT[namespacePart]>}
             ) : never
