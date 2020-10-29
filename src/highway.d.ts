@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs';
 import {Duplex, Readable, Writable} from 'stream';
-import {Register, Request, Stream, ObserveAll, Observe, RequestAll} from './highway-symbols';
+import * as HighwaySymbols from './highway-symbols.typings';
+export * from './highway-symbols.typings';
 
 export interface CancelablePromise<T> extends Promise<T> {
     cancel?(): void;
@@ -51,12 +52,12 @@ export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, any>> = {
 export interface LineProxy<FUNC extends LineProxyFunction<Arguments, any> = LineProxyFunction<Arguments, any>> {
     [namespacePart: string]: LineProxy,
 
-    [Request](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
-    [RequestAll](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>[];
-    [Observe](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
-    [ObserveAll](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
-    [Stream](...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
-    [Register](driver: LineProxyDriver<FUNC>): Bus;
+    [HighwaySymbols.Request](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
+    [HighwaySymbols.RequestAll](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>[];
+    [HighwaySymbols.Observe](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
+    [HighwaySymbols.ObserveAll](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
+    [HighwaySymbols.Stream](...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
+    [HighwaySymbols.Register](driver: LineProxyDriver<FUNC>): Bus;
 }
 
 export type AutoProxyStructMap = {

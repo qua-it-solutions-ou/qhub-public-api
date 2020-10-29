@@ -2,7 +2,7 @@
   "name": "@qhub/public-api",
   "repository": "https://gitlab.qua.one/qhub/public-api/",
   "license": "UNLICENSED",
-  "version": "0.0.0-25",
+  "version": "0.0.0-26",
   "types": "src/index-typings.d.ts",
   "main": "lib/index.js",
   "bin": {
@@ -10,6 +10,7 @@
   },
   "files": [
     "src/**/*.d.ts",
+    "src/**/*.typings.ts",
     "lib/**/*.js"
   ],
   "scripts": {

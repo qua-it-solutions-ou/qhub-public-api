@@ -1,1 +1,1 @@
-export * from './highway-symbols';
+export * from './highway-symbols.typings';
