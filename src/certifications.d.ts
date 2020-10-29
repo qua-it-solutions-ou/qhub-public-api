@@ -1,6 +1,5 @@
-import {Highway} from './highway';
-import {Observable} from 'rxjs';
 import {Domains} from './domains';
+import {AutoProxy} from "./highway";
 
 export type CertificationErrorCode = 'unknown' | 'challenge-failed' | 'no-subscription';
 export type CertificationStatus = {
@@ -20,6 +19,7 @@ export type CertificationStatus = {
     code: 'no-domain'
 };
 
-export type CertificationManagerHighway = Highway & {
-    observe(line: 'status'): Observable<CertificationStatus>;
-};
+export type CertificationManagerHighway = AutoProxy<{
+    status(): CertificationStatus
+}>;
+

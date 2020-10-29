@@ -1,13 +1,10 @@
-import {Bus, Highway} from './highway';
-import {Observable} from 'rxjs';
+import {AutoProxy} from './highway';
 
 export type Domain = string;
 export type Domains = Domain[];
 
-export type DomainsHighway = Highway & {
-    request(line: 'actives'): Promise<Domains>;
-    observe(line: 'actives'): Observable<Domains>;
-    request(line: 'reload'): Promise<void>;
-
-    register(line: 'supply', driver: () => Observable<Domains>): Bus;
-};
+export type DomainsHighway = AutoProxy<{
+    actives(): Domains;
+    reload(): void;
+    supply(): Domains;
+}>;

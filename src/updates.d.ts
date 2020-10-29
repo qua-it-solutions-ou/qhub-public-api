@@ -1,5 +1,4 @@
-import {Highway} from './highway';
-import {Observable} from 'rxjs';
+import {AutoProxy} from './highway';
 
 export type HubVersion = string;
 export type UpdateStatus = {
@@ -16,9 +15,11 @@ export type UpdateStatus = {
     phase: 'error'
 };
 
-export type UpdateManagerHighway = Highway & {
-    request(line: 'version/current'): Promise<HubVersion>;
-    observe(line: 'version/live'): Observable<HubVersion>;
-    observe(line: 'status'): Observable<UpdateStatus>;
-    request(line: 'trigger-update'): Promise<void>;
-};
+export type UpdateManagerHighway = AutoProxy<{
+    version: {
+        current(): HubVersion,
+        live(): HubVersion
+    },
+    status(): UpdateStatus,
+    'trigger-update'(): void
+}>;

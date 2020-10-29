@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs';
-import { Readable, Writable, Duplex } from 'stream';
+import {Duplex, Readable, Writable} from 'stream';
 
 export interface CancelablePromise<T> extends Promise<T> {
     cancel?(): void;
@@ -8,25 +8,71 @@ export interface CancelablePromise<T> extends Promise<T> {
 export type BusIdentifier = number;
 export type LineIdentifier = string;
 
+export type Identifier = LineIdentifier | BusIdentifier;
+
 export type LineIdentifierPart = string;
 
-export type Serializable = string | boolean | number | null | undefined | Date | Serializable[] | {[key: string]: Serializable} | ArrayBufferView;
+export type Driver<Args extends Arguments, T extends any = any> = {
+    response(...args: Args): PromiseResult<T>;
+} | {
+    emit(...args: Args): ObservableResult<T>;
+} | {
+    stream(...args: Args): StreamResult;
+} | (
+    (...args: Args) => Result<T>
+);
 
-export type Driver = {
-    response(...args: Arguments): PromiseResult;
-} | {
-    emit(...args: Arguments): ObservableResult;
-} | {
-    stream(...args: Arguments): StreamResult;
-} | {
-    (...args: Arguments): Result
+export const Request: unique symbol;
+export const RequestAll: unique symbol;
+export const Observe: unique symbol;
+export const ObserveAll: unique symbol;
+export const Stream: unique symbol;
+export const Register: unique symbol;
+
+export type ProxyReturnType = any | Result<any>;
+
+export type LineProxyFunction<ARGS extends Arguments, T extends ProxyReturnType> =
+    (...args: ARGS) => T;
+
+export type AutoPromiseResult<T extends any> = T extends never ? never : PromiseResult<T>;
+export type AutoObservableResult<T extends any> = T extends never ? never : ObservableResult<T>;
+
+export type PromiseResultFrom<T extends ProxyReturnType> = T extends PromiseResult<any> ? T : AutoPromiseResult<Extract<T, any>>;
+export type ObservableResultFrom<T extends ProxyReturnType> = T extends ObservableResult<any> ? T : AutoObservableResult<Extract<T, any>>;
+export type StreamResultFrom<T extends ProxyReturnType> = T extends StreamResult ? T : Extract<T, StreamResult>;
+
+export interface LineProxy<FUNC extends LineProxyFunction<Arguments, ProxyReturnType> = LineProxyFunction<Arguments, ProxyReturnType>> {
+    [namespacePart: string]: LineProxy,
+
+    [Request](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
+    [RequestAll](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>[];
+    [Observe](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
+    [ObserveAll](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
+    [Stream](...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
+    [Register](...args: Parameters<FUNC>): Bus;
+}
+
+export type AutoProxyStructMap = {
+    [namespacePart: string]: LineProxy | AutoProxyStruct
 };
+export type AutoProxyStruct =
+    LineProxyFunction<any, any> | AutoProxyStructMap;
 
-export type Arguments = Serializable[];
-export type PromiseResult = CancelablePromise<any>;
-export type ObservableResult = Observable<any>;
+export type AutoProxy<STRUCT extends AutoProxyStruct> =(
+    STRUCT extends LineProxyFunction<any, any> ? LineProxy<STRUCT> : (
+        STRUCT extends LineProxy ? STRUCT : (
+            STRUCT extends AutoProxyStructMap ? (
+                LineProxy & {[namespacePart in keyof STRUCT]: AutoProxy<STRUCT[namespacePart]>}
+            ) : never
+        )
+    )
+)
+
+export type Arguments = any[];
+export type PromiseResult<T extends any> = CancelablePromise<T>;
+export type ObservableResult<T extends any> = Observable<T>;
 export type StreamResult = Readable | Writable | (Readable & Writable);
-export type Result = PromiseResult | ObservableResult | StreamResult;
+export type Result<T extends any> = PromiseResult<T> | ObservableResult<T> | StreamResult;
 
 export interface Bus {
     readonly identifier: BusIdentifier;
@@ -34,38 +80,40 @@ export interface Bus {
     unregister(): void;
 }
 
-export type Identifier = LineIdentifier | BusIdentifier;
-
 export interface Highway {
     register(
         line: LineIdentifier,
-        driver: Driver
+        driver: Driver<Arguments, any>
     ): Bus;
 
-    namespace(...parts: LineIdentifierPart[]): Highway;
-
     request(
-        identifier: Identifier,
+        line: Identifier,
         ...args: Arguments
-    ): PromiseResult;
-
-    observe(
-        identifier: Identifier,
-        ...args: Arguments
-    ): ObservableResult;
-
-    observeAll(
-        line: LineIdentifier,
-        ...args: Arguments
-    ): ObservableResult[];
+    ): PromiseResult<any>;
 
     requestAll(
         line: LineIdentifier,
         ...args: Arguments
-    ): PromiseResult[];
+    ): PromiseResult<any>[];
 
-    stream(
+    observe(
+        line: Identifier,
+        ...args: Arguments
+    ): ObservableResult<any>;
+
+    observeAll(
         line: LineIdentifier,
         ...args: Arguments
+    ): ObservableResult<any>[];
+
+    stream(
+        line: Identifier,
+        ...args: Arguments
     ): Duplex;
+
+    namespace(
+        ...parts: LineIdentifierPart[]
+    ): Highway;
+
+    proxy(): LineProxy;
 }

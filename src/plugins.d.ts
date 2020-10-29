@@ -1,5 +1,4 @@
-import {Bus, Highway} from './highway';
-import {Observable} from 'rxjs';
+import {AutoProxy} from './highway';
 import {Readable} from "stream";
 
 export interface ResourceDirectory {
@@ -14,42 +13,38 @@ export interface PluginInfo {
     version: string
 }
 
-export type StaticPluginManagerHighway = Highway & {
-    observe(line: 'active-instance', name: string, version?: string): Observable<PluginInstanceIdentifier | null>;
-    request(line: 'instance/info', id: PluginInstanceIdentifier): Promise<PluginInfo>;
-    observe(line: 'instance/active', id: PluginInstanceIdentifier): Observable<boolean>;
-    observe(line: 'instance/ready', id: PluginInstanceIdentifier): Observable<boolean>;
-    request(line: 'active-instances'): Promise<PluginInstanceIdentifier[]>;
-    observe(line: 'active-instances'): Observable<PluginInstanceIdentifier[]>;
-    request(line: 'instance/pack', id: PluginInstanceIdentifier): Promise<Buffer>;
-    request(line: 'instance/pack-hash', id: PluginInstanceIdentifier): Promise<string>;
-    request(line: 'instance/resource', id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
-};
+export type StaticPluginManagerHighway = AutoProxy<{
+    'active-instance'(name: string, version?: string): PluginInstanceIdentifier | null;
+    instance: {
+        info(id: PluginInstanceIdentifier): PluginInfo;
+        active(id: PluginInstanceIdentifier): boolean;
+        ready(id: PluginInstanceIdentifier): boolean;
+        pack(id: PluginInstanceIdentifier): Buffer;
+        'pack-hash'(id: PluginInstanceIdentifier): string;
+        resource(id: PluginInstanceIdentifier, resourcePath: string): ResourceFile | undefined;
+    },
+    'active-instances'(): PluginInstanceIdentifier[];
+}>;
 
-export type PluginManagerHighway = StaticPluginManagerHighway & {
-    request(line: 'plug', pack: Buffer): Promise<PluginInstanceIdentifier>;
-    request(line: 'unplug', nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
-};
+export type PluginManagerHighway = StaticPluginManagerHighway & AutoProxy<{
+    plug(pack: Buffer): PluginInstanceIdentifier;
+    unplug(nameOrIdentifier: string | PluginInstanceIdentifier): void;
+}>;
 
 export type PluginRepositoryIdentifier = string;
 
 export interface AvailablePluginInfo extends PluginInfo {
 }
 
-export type RepositoryPluginManagerHighway = PluginManagerHighway & {
-    requestAll(line: 'repositories'): Promise<PluginRepositoryIdentifier[]>[];
-    register(line: 'repositories', driver: () => Promise<PluginRepositoryIdentifier[]>): Bus;
+export type RepositoryPluginManagerHighway = PluginManagerHighway & AutoProxy<{
+    repositories(): PluginRepositoryIdentifier[],
+    repository: {
+       [repositoryIdentifier in PluginRepositoryIdentifier]: PluginRepositoryHighway
+    }
+}>;
 
-    namespace(lineRepository: 'repository', repositoryIdentifier: PluginRepositoryIdentifier): PluginRepositoryHighway
-};
-
-export type PluginRepositoryHighway = Highway & {
-    request(line: 'available-plugins'): Promise<AvailablePluginInfo[]>;
-    register(line: 'available-plugins', driver: () => Promise<AvailablePluginInfo[]>): Bus;
-
-    stream(line: 'plugin-pack', name: string, version: string): Readable;
-    register(line: 'plugin-pack', driver: (name: string, version: string) => Readable): Bus;
-
-    request(line: 'plugin-icon', name: string, version: string): Promise<Buffer>;
-    register(line: 'plugin-icon', driver: (name: string, version: string) => Promise<Buffer>): Bus;
-};
+export type PluginRepositoryHighway = AutoProxy<{
+    'available-plugins'(): AvailablePluginInfo[];
+    'plugin-pack'(name: string, version: string): Readable;
+    'plugin-icon'(name: string, version: string): Buffer;
+}>;
