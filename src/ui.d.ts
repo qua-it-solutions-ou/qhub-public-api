@@ -14,3 +14,5 @@ export function useTitle(): [
 export function useWindowID(): WindowIdentifier;
 
 export const uiHighway: UIPluginHighway;
+
+export const windowIdentifier: WindowIdentifier;

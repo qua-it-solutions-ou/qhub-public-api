@@ -2,7 +2,7 @@
   "name": "@qhub/public-api",
   "repository": "https://gitlab.qua.one/qhub/public-api/",
   "license": "UNLICENSED",
-  "version": "0.0.0-18",
+  "version": "0.0.0-19",
   "types": "src/index.d.ts",
   "main": "lib/dummy.js",
   "bin": {
