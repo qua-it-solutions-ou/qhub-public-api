@@ -49,6 +49,15 @@ export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, any>> = {
     (...args: Parameters<FUNC>) => StreamResultFrom<ReturnType<FUNC>> | ObservableResultFrom<ReturnType<FUNC>> | PromiseResultFrom<ReturnType<FUNC>>
 );
 
+export interface LineProxyMethods<FUNC extends LineProxyFunction<Arguments, any> = LineProxyFunction<Arguments, any>> {
+    request(...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
+    requestAll(...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>[];
+    observe(...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
+    observeAll(...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
+    stream(...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
+    register(driver: LineProxyDriver<FUNC>): Bus;
+}
+
 export interface LineProxy<FUNC extends LineProxyFunction<Arguments, any> = LineProxyFunction<Arguments, any>> {
     [namespacePart: string]: LineProxy,
 
@@ -58,6 +67,8 @@ export interface LineProxy<FUNC extends LineProxyFunction<Arguments, any> = Line
     [HighwaySymbols.ObserveAll](...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>[];
     [HighwaySymbols.Stream](...args: Parameters<FUNC>): StreamResultFrom<ReturnType<FUNC>>;
     [HighwaySymbols.Register](driver: LineProxyDriver<FUNC>): Bus;
+
+    (): LineProxyMethods<FUNC>;
 }
 
 export type AutoProxyStructMap = {
