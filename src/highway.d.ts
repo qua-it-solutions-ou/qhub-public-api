@@ -29,19 +29,22 @@ export const ObserveAll: unique symbol;
 export const Stream: unique symbol;
 export const Register: unique symbol;
 
-export type ProxyReturnType = any | Result<any>;
-
-export type LineProxyFunction<ARGS extends Arguments, T extends ProxyReturnType> =
+export type LineProxyFunction<ARGS extends Arguments, T extends any> =
     (...args: ARGS) => T;
 
-export type AutoPromiseResult<T extends any> = T extends never ? never : PromiseResult<T>;
-export type AutoObservableResult<T extends any> = T extends never ? never : ObservableResult<T>;
+export type GenericTypeOfResult<T> = (
+    T extends Promise<infer X> ? X : (
+        T extends Observable<infer X> ? X : (
+            T
+        )
+    )
+);
 
-export type PromiseResultFrom<T extends ProxyReturnType> = T extends PromiseResult<any> ? T : AutoPromiseResult<Extract<T, any>>;
-export type ObservableResultFrom<T extends ProxyReturnType> = T extends ObservableResult<any> ? T : AutoObservableResult<Extract<T, any>>;
-export type StreamResultFrom<T extends ProxyReturnType> = T extends StreamResult ? T : Extract<T, StreamResult>;
+export type PromiseResultFrom<T> = PromiseResult<Exclude<GenericTypeOfResult<T>, StreamResult>>;
+export type ObservableResultFrom<T> = ObservableResult<Exclude<GenericTypeOfResult<T>, StreamResult>>;
+export type StreamResultFrom<T> = T extends StreamResult ? T : never;
 
-export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, ProxyReturnType>> = {
+export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, any>> = {
     response(...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
 } | {
     emit(...args: Parameters<FUNC>): ObservableResultFrom<ReturnType<FUNC>>;
@@ -51,7 +54,7 @@ export type LineProxyDriver<FUNC extends LineProxyFunction<Arguments, ProxyRetur
     (...args: Parameters<FUNC>) => StreamResultFrom<ReturnType<FUNC>> | ObservableResultFrom<ReturnType<FUNC>> | PromiseResultFrom<ReturnType<FUNC>>
 );
 
-export interface LineProxy<FUNC extends LineProxyFunction<Arguments, ProxyReturnType> = LineProxyFunction<Arguments, ProxyReturnType>> {
+export interface LineProxy<FUNC extends LineProxyFunction<Arguments, any> = LineProxyFunction<Arguments, any>> {
     [namespacePart: string]: LineProxy,
 
     [Request](...args: Parameters<FUNC>): PromiseResultFrom<ReturnType<FUNC>>;
@@ -79,10 +82,10 @@ export type AutoProxy<STRUCT extends AutoProxyStruct> =(
 )
 
 export type Arguments = any[];
-export type PromiseResult<T extends any> = CancelablePromise<T>;
-export type ObservableResult<T extends any> = Observable<T>;
+export type PromiseResult<T> = CancelablePromise<T>;
+export type ObservableResult<T> = Observable<T>;
 export type StreamResult = Readable | Writable | (Readable & Writable);
-export type Result<T extends any> = PromiseResult<T> | ObservableResult<T> | StreamResult;
+export type Result<T> = PromiseResult<T> | ObservableResult<T> | StreamResult;
 
 export interface Bus {
     readonly identifier: BusIdentifier;
