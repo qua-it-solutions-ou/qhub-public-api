@@ -6,7 +6,7 @@ import {WindowManagerHighway} from './window';
 import {CertificationManagerHighway} from './certifications';
 import {UpdateManagerHighway} from './updates';
 
-export type UIPluginHighway = AutoProxy<{
+export type UIPluginHighway = HubPluginHighway & AutoProxy<{
     'ui-plugin-manager': StaticPluginManagerHighway;
 }>;
 
