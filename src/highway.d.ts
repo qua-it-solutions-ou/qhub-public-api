@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
 import {Duplex, Readable, Writable} from 'stream';
+import {Register, Request, Stream, ObserveAll, Observe, RequestAll} from './highway-symbols';
 
 export interface CancelablePromise<T> extends Promise<T> {
     cancel?(): void;
@@ -21,13 +22,6 @@ export type Driver<Args extends Arguments, T extends any = any> = {
 } | (
     (...args: Args) => Result<T>
 );
-
-export const Request = Symbol('Request');
-export const RequestAll = Symbol('RequestAll');
-export const Observe = Symbol('Observe');
-export const ObserveAll = Symbol('ObserveAll');
-export const Stream = Symbol('Stream');
-export const Register = Symbol('Register');
 
 export type LineProxyFunction<ARGS extends Arguments, T extends any> =
     (...args: ARGS) => T;

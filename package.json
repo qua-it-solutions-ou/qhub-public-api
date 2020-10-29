@@ -2,8 +2,8 @@
   "name": "@qhub/public-api",
   "repository": "https://gitlab.qua.one/qhub/public-api/",
   "license": "UNLICENSED",
-  "version": "0.0.0-24",
-  "types": "src/index.d.ts",
+  "version": "0.0.0-25",
+  "types": "src/index-typings.d.ts",
   "main": "lib/index.js",
   "bin": {
     "qhub-sdk": "lib/sdk/bin.js"
