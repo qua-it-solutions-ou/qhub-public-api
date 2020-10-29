@@ -19,7 +19,7 @@ export type CertificationStatus = {
     code: 'no-domain'
 };
 
-export type CertificationManagerHighway = AutoProxy<{
+export interface CertificationManagerHighway extends AutoProxy<{
     status(): CertificationStatus
-}>;
+}> {}
 

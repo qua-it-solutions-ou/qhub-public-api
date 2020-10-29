@@ -13,7 +13,7 @@ export interface PluginInfo {
     version: string
 }
 
-export type StaticPluginManagerHighway = AutoProxy<{
+export interface StaticPluginManagerHighway extends AutoProxy<{
     'active-instance'(name: string, version?: string): PluginInstanceIdentifier | null;
     instance: {
         info(id: PluginInstanceIdentifier): PluginInfo;
@@ -24,27 +24,27 @@ export type StaticPluginManagerHighway = AutoProxy<{
         resource(id: PluginInstanceIdentifier, resourcePath: string): ResourceFile | undefined;
     },
     'active-instances'(): PluginInstanceIdentifier[];
-}>;
+}> {}
 
-export type PluginManagerHighway = StaticPluginManagerHighway & AutoProxy<{
+export interface PluginManagerHighway extends StaticPluginManagerHighway, AutoProxy<{
     plug(pack: Buffer): PluginInstanceIdentifier;
     unplug(nameOrIdentifier: string | PluginInstanceIdentifier): void;
-}>;
+}> {}
 
 export type PluginRepositoryIdentifier = string;
 
 export interface AvailablePluginInfo extends PluginInfo {
 }
 
-export type RepositoryPluginManagerHighway = PluginManagerHighway & AutoProxy<{
+export interface RepositoryPluginManagerHighway extends PluginManagerHighway, AutoProxy<{
     repositories(): PluginRepositoryIdentifier[],
     repository: {
        [repositoryIdentifier in PluginRepositoryIdentifier]: PluginRepositoryHighway
     }
-}>;
+}> {}
 
-export type PluginRepositoryHighway = AutoProxy<{
+export interface PluginRepositoryHighway extends AutoProxy<{
     'available-plugins'(): AvailablePluginInfo[];
     'plugin-pack'(name: string, version: string): Readable;
     'plugin-icon'(name: string, version: string): Buffer;
-}>;
+}> {}

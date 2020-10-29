@@ -15,11 +15,11 @@ export type UpdateStatus = {
     phase: 'error'
 };
 
-export type UpdateManagerHighway = AutoProxy<{
+export interface UpdateManagerHighway extends AutoProxy<{
     version: {
         current(): HubVersion,
         live(): HubVersion
     },
     status(): UpdateStatus,
     'trigger-update'(): void
-}>;
+}> {}

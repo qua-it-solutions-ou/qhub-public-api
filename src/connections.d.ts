@@ -3,11 +3,11 @@ import {Observable} from 'rxjs';
 
 export type ConnectionIdentifier = string;
 
-export type ConnectionManagerHighway = AutoProxy<{
+export interface ConnectionManagerHighway extends AutoProxy<{
     'available-connections'(): ConnectionIdentifier[];
     'new-connection'(): ConnectionIdentifier;
     'available-connection'(): ConnectionIdentifier; // all available connections + every next new-connection
     connection: {
         availability(connectionID: ConnectionIdentifier): Observable<boolean> | Promise<boolean | undefined>
     }
-}>;
+}> {}

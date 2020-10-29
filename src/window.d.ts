@@ -4,8 +4,8 @@ import {Observable} from 'rxjs';
 export type WindowIdentifier = string;
 export type WindowHash = string;
 
-export type WindowManagerHighway = AutoProxy<{
+export interface WindowManagerHighway extends AutoProxy<{
     control(windowID: WindowIdentifier, command: 'minimize' | 'maximize' | 'unmaximize' | 'restore' | 'close'): void;
     state(windowID: WindowIdentifier): Observable<'minimized' | 'maximized' | 'windowed'>;
     create(parentWindowID: WindowIdentifier, hash: WindowHash): Promise<WindowIdentifier>;
-}>;
+}> {}
