@@ -11,4 +11,4 @@ export * from './hub';
 export * from './node';
 export * from './common';
 export * from './supervised';
-export * from './highway-symbols';
+export * from './highway-symbols.typings';

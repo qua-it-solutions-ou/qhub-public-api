@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
-import {ObserveChildren, ObserveLines} from './highway-symbols';
+import {ObserveChildren, ObserveLines} from './highway-symbols.typings';
 
 export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
 
