@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
+import {ObserveChildren, ObserveLines} from './highway-symbols';
 
 export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
 
@@ -60,6 +61,11 @@ export interface Line<ARGS extends Arguments, D extends LineDefault, T> {
 export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Line<ARGS, D, T>, Iterable<Line<ARGS, D, T>> {
     [name: string]: Highway<Arguments, any, LineResult<any>>;
 
+    [ObserveLines]: Observable<Line<ARGS, D, T>[]>;
+    [ObserveChildren]: Observable<{
+        [name: string]: Highway<Arguments, any, LineResult<any>>
+    }>;
+
     new (lineDefault: D, driver: LineDriver<ARGS, D, T>): Bus
 }
 
@@ -70,7 +76,7 @@ export type AutoProxyStructMap = {
 export type AutoProxyStruct =
     LineDriver<Arguments, LineDefault, any> | AutoProxyStructMap;
 
-export type AutoProxy<STRUCT extends AutoProxyStruct> =(
+export type AutoProxy<STRUCT extends AutoProxyStruct> = (
     STRUCT extends Highway<Arguments, LineDefault, any> ? STRUCT : (
         STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
             STRUCT extends AutoProxyStructMap ? (
