@@ -4,10 +4,10 @@ import {Observable} from 'rxjs';
 export type ConnectionIdentifier = string;
 
 export interface ConnectionManagerHighway extends AutoProxy<{
-    'available-connections'(): ConnectionIdentifier[];
-    'new-connection'(): ConnectionIdentifier;
-    'available-connection'(): ConnectionIdentifier; // all available connections + every next new-connection
+    'available-connections'(): Observable<ConnectionIdentifier[]>;
+    'new-connection'(): Observable<ConnectionIdentifier>;
+    'available-connection'(): Observable<ConnectionIdentifier>; // all available connections + every next new-connection
     connection: {
-        availability(connectionID: ConnectionIdentifier): Observable<boolean> | Promise<boolean | undefined>
+        availability(connectionID: ConnectionIdentifier): Observable<undefined | boolean>
     }
 }> {}

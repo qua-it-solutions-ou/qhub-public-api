@@ -20,6 +20,6 @@ export type CertificationStatus = {
 };
 
 export interface CertificationManagerHighway extends AutoProxy<{
-    status(): CertificationStatus
+    status(): Promise<CertificationStatus>
 }> {}
 
