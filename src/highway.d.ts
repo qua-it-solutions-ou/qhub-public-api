@@ -1,7 +1,6 @@
 import {Observable} from 'rxjs';
-import {Readable, Stream, Writable} from 'stream';
+import {Stream} from 'stream';
 
-export type LineIdentifierPart = string;
 export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
 
 export type LineDefault = 'promise' | 'observable' | 'stream';
@@ -58,24 +57,24 @@ export interface Line<ARGS extends Arguments, D extends LineDefault, T> {
     (...args: ARGS): BuildLineResult<D, T>
 }
 
-export interface ComplexLine<ARGS extends Arguments, D extends LineDefault, T> extends Line<ARGS, D, T>, Iterable<Line<ARGS, D, T>> {
-    [name: string]: ComplexLine<Arguments, any, LineResult<any>>;
+export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Line<ARGS, D, T>, Iterable<Line<ARGS, D, T>> {
+    [name: string]: Highway<Arguments, any, LineResult<any>>;
 
     new (lineDefault: D, driver: LineDriver<ARGS, D, T>): Bus
 }
 
 export type AutoProxyStructMap = {
-    [name: string]: ComplexLine<Arguments, LineDefault, any> | AutoProxyStruct
+    [name: string]: Highway<Arguments, LineDefault, any> | AutoProxyStruct
 };
 
 export type AutoProxyStruct =
     LineDriver<Arguments, LineDefault, any> | AutoProxyStructMap;
 
 export type AutoProxy<STRUCT extends AutoProxyStruct> =(
-    STRUCT extends ComplexLine<Arguments, LineDefault, any> ? STRUCT : (
-        STRUCT extends (...args: infer Args) => infer R ? ComplexLine<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
+    STRUCT extends Highway<Arguments, LineDefault, any> ? STRUCT : (
+        STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
             STRUCT extends AutoProxyStructMap ? (
-                ComplexLine<Arguments, LineDefault, any> & {[name in keyof STRUCT]: AutoProxy<STRUCT[name]>}
+                Highway<Arguments, LineDefault, any> & {[name in keyof STRUCT]: AutoProxy<STRUCT[name]>}
             ) : never
         )
     )
