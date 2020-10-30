@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
-import {GetLineDefault, ObserveChildren, ObserveLines} from './highway-symbols.typings';
+import {ObserveChildren, ObserveLines} from './highway-symbols.typings';
 
 export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
 
@@ -56,10 +56,16 @@ export type LineDriver<ARGS extends Arguments, D extends LineDefault, T> =
 
 export interface Line<ARGS extends Arguments, D extends LineDefault, T> {
     (...args: ARGS): BuildLineResult<D, T>,
-    [GetLineDefault]: LineDefault
+    lineDefault: LineDefault,
+    meta?: any
 }
 
-export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Line<ARGS, D, T>, Iterable<Line<ARGS, D, T>> {
+export interface LineRegistration<ARGS extends Arguments, D extends LineDefault, T, META> extends Line<ARGS, D, T> {
+    unregister(): void;
+    meta: META
+}
+
+export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Iterable<Line<ARGS, D, T>> {
     [name: string]: Highway<Arguments, any, LineResult<any>>;
 
     [ObserveLines]: Observable<Line<ARGS, D, T>[]>;
@@ -67,7 +73,7 @@ export interface Highway<ARGS extends Arguments, D extends LineDefault, T> exten
         [name: string]: Highway<Arguments, any, LineResult<any>>
     }>;
 
-    new (lineDefault: D, driver: LineDriver<ARGS, D, T>): Bus
+    new <META>(lineDefault: D, driver: LineDriver<ARGS, D, T>, meta?: META): LineRegistration<ARGS, D, T, META>
 }
 
 export type AutoProxyStructMap = {
@@ -88,7 +94,3 @@ export type AutoProxy<STRUCT extends AutoProxyStruct> = (
 )
 
 export type Arguments = any[];
-
-export interface Bus {
-    unregister(): void;
-}
