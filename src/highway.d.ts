@@ -57,7 +57,8 @@ export type LineDriver<ARGS extends Arguments, D extends LineDefault, T> =
 export interface Line<ARGS extends Arguments, D extends LineDefault, T> {
     (...args: ARGS): BuildLineResult<D, T>,
     lineDefault: LineDefault,
-    meta?: any
+    meta?: any,
+    key: number
 }
 
 export interface LineRegistration<ARGS extends Arguments, D extends LineDefault, T, META> extends Line<ARGS, D, T> {
