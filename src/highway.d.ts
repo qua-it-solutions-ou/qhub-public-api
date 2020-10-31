@@ -94,12 +94,14 @@ export interface CustomHighway<ARGS extends Arguments, D extends LineDefault, T,
 
 export type AutoProxy<STRUCT extends AutoProxyStruct> = (
     STRUCT extends Highway<Arguments, LineDefault, any> ? STRUCT : (
-        STRUCT extends LineDriver<infer Args, infer D, infer T> ? Highway<Args, D, T> : (
+        STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
             STRUCT extends AutoProxyStructMap ? (
                 (
-                    CustomHighway<Arguments, LineDefault, any, {
-                        [name in keyof STRUCT]: AutoProxy<STRUCT[name]>
-                    }>
+                    Highway<Arguments, LineDefault, any> & {
+                        _: {
+                            [name in keyof STRUCT]: AutoProxy<STRUCT[name]>
+                        }
+                    }
                 )
             ) : never
         )
