@@ -5,7 +5,7 @@ export type Domain = string;
 export type Domains = Domain[];
 
 export interface DomainsHighway extends AutoProxy<{
-    actives(): Observable<Domains>;
-    reload(): Promise<void>;
-    supply(): Observable<Domains>;
+    Actives(): Observable<Domains>;
+    Reload(): Promise<void>;
+    Supply(): Observable<Domains>;
 }> {}

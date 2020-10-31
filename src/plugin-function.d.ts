@@ -7,21 +7,21 @@ import {CertificationManagerHighway} from './certifications';
 import {UpdateManagerHighway} from './updates';
 
 export type UIPluginHighway = AutoProxy<{
-    'ui-plugin-manager': StaticPluginManagerHighway;
+    UIPluginManager: StaticPluginManagerHighway;
 }> & HubPluginHighway;
 
 export interface HubPluginHighway extends AutoProxy<{
-    'plugin-manager': RepositoryPluginManagerHighway,
-    'connection-manager': ConnectionManagerHighway,
-    connection: ConnectionNamespaceHighway,
-    domains: DomainsHighway,
-    'window-manager': WindowManagerHighway,
-    'certification-manager': CertificationManagerHighway,
-    'update-manager': UpdateManagerHighway
+    PluginManager: RepositoryPluginManagerHighway,
+    ConnectionManager: ConnectionManagerHighway,
+    Connection: ConnectionNamespaceHighway,
+    Domains: DomainsHighway,
+    WindowManager: WindowManagerHighway,
+    CertificationManager: CertificationManagerHighway,
+    UpdateManager: UpdateManagerHighway
 }> {}
 
 export interface NodeHighway extends AutoProxy<{
-    'plugin-manager': PluginManagerHighway;
+    PluginManage: PluginManagerHighway;
 }> {}
 export interface NodePluginHighway extends NodeHighway {
 }
@@ -29,5 +29,5 @@ export interface NodePluginHighway extends NodeHighway {
 export interface ConnectionHighway extends NodeHighway {
 }
 export interface ConnectionNamespaceHighway extends AutoProxy<{
-    [connectionID in ConnectionIdentifier]: ConnectionHighway;
+    [ConnectionID in ConnectionIdentifier]: ConnectionHighway;
 }> {}

@@ -21,6 +21,6 @@ export type CertificationStatus = {
 };
 
 export interface CertificationManagerHighway extends AutoProxy<{
-    status(): Observable<CertificationStatus>
+    Status(): Observable<CertificationStatus>
 }> {}
 
