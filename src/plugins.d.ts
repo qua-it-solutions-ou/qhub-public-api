@@ -27,22 +27,22 @@ export interface StaticPluginManagerHighway extends AutoProxy<{
     'active-instances'(): Observable<PluginInstanceIdentifier[]>;
 }> {}
 
-export interface PluginManagerHighway extends AutoProxy<{
+export type PluginManagerHighway = AutoProxy<{
     plug(pack: Buffer): Promise<PluginInstanceIdentifier>;
     unplug(nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
-}, StaticPluginManagerHighway> {}
+}> & StaticPluginManagerHighway;
 
 export type PluginRepositoryIdentifier = string;
 
 export interface AvailablePluginInfo extends PluginInfo {
 }
 
-export interface RepositoryPluginManagerHighway extends AutoProxy<{
+export type RepositoryPluginManagerHighway = AutoProxy<{
     repositories(): Observable<PluginRepositoryIdentifier[]>,
     repository: {
        [repositoryIdentifier in PluginRepositoryIdentifier]: PluginRepositoryHighway
     }
-}, PluginManagerHighway> {}
+}> & PluginManagerHighway;
 
 export interface PluginRepositoryHighway extends AutoProxy<{
     'available-plugins'(): Observable<AvailablePluginInfo[]>;
