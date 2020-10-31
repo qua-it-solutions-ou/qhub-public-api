@@ -75,6 +75,7 @@ export interface Highway<ARGS extends Arguments, D extends LineDefault, T> exten
     }>;
 
     new <META>(lineDefault: D, driver: LineDriver<ARGS, D, T>, meta?: META): LineRegistration<ARGS, D, T, META>
+    (...args: ARGS): BuildLineResult<D, T>
 }
 
 export type AutoProxyStructMap = {
