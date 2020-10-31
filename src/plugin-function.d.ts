@@ -6,9 +6,9 @@ import {WindowManagerHighway} from './window';
 import {CertificationManagerHighway} from './certifications';
 import {UpdateManagerHighway} from './updates';
 
-export interface UIPluginHighway extends HubPluginHighway, AutoProxy<{
+export interface UIPluginHighway extends AutoProxy<{
     'ui-plugin-manager': StaticPluginManagerHighway;
-}> {}
+}, HubPluginHighway> {}
 
 export interface HubPluginHighway extends AutoProxy<{
     'plugin-manager': RepositoryPluginManagerHighway,

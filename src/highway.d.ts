@@ -1,6 +1,5 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
-import {ObserveChildren, ObserveLines} from './highway-symbols.typings';
 
 export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
 
@@ -66,11 +65,15 @@ export interface LineRegistration<ARGS extends Arguments, D extends LineDefault,
     meta: META
 }
 
-export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Iterable<Line<ARGS, D, T>> {
-    [name: string]: Highway<Arguments, any, LineResult<any>>;
+export interface Children {
+    [name: string]: Highway<Arguments, any, LineResult<any>>
+}
 
-    [ObserveLines]: Observable<Line<ARGS, D, T>[]>;
-    [ObserveChildren]: Observable<{
+export interface Highway<ARGS extends Arguments, D extends LineDefault, T, C extends Children = Children> extends Iterable<Line<ARGS, D, T>> {
+    _: Children & C;
+
+    lines$: Observable<Line<ARGS, D, T>[]>;
+    children$: Observable<{
         [name: string]: Highway<Arguments, any, LineResult<any>>
     }>;
 
@@ -78,19 +81,43 @@ export interface Highway<ARGS extends Arguments, D extends LineDefault, T> exten
     (...args: ARGS): BuildLineResult<D, T>
 }
 
-export type AutoProxyStructMap = {
-    [name: string]: Highway<Arguments, LineDefault, any> | AutoProxyStruct
-};
+export interface AutoProxyStructMap {
+    [name: string]: AutoProxyStruct
+}
 
 export type AutoProxyStruct =
-    LineDriver<Arguments, LineDefault, any> | AutoProxyStructMap;
+    Highway<Arguments, LineDefault, any, any> | LineDriver<Arguments, LineDefault, any> | AutoProxyStructMap;
 
-export type AutoProxy<STRUCT extends AutoProxyStruct> = (
-    STRUCT extends Highway<Arguments, LineDefault, any> ? STRUCT : (
-        STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
-            STRUCT extends AutoProxyStructMap ? (
-                Highway<Arguments, LineDefault, any> & {[name in keyof STRUCT]: AutoProxy<STRUCT[name]>}
-            ) : never
+export type AutoProxy<STRUCT extends AutoProxyStruct, BASE extends Highway<Arguments, LineDefault, any> | undefined = undefined> = (
+    BASE extends undefined ? (
+        (
+            STRUCT extends Highway<infer ARGS, infer D, infer T, infer C> ? Highway<ARGS, D, T, C> : (
+                STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
+                    STRUCT extends AutoProxyStructMap ? (
+                        (
+                            Highway<Arguments, LineDefault, any, {
+                                [name in keyof STRUCT]: AutoProxy<STRUCT[name]>
+                            } & Children>
+                        )
+                    ) : never
+                )
+            )
+        )
+    ) : (
+        BASE extends Highway<infer bARGS, infer bD, infer bT, infer bC> ? (
+            STRUCT extends Highway<infer ARGS, infer D, infer T, infer C> ? Highway<ARGS & bARGS, D & bD, T & bT, C & bC> : (
+                STRUCT extends (...args: infer Args) => infer R ? Highway<Args & bARGS, ExtractLineDefault<R> & bD, ExtractResultType<R> & bT, bC> : (
+                    STRUCT extends AutoProxyStructMap ? (
+                        (
+                            Highway<bARGS, bD, bT, {
+                                [name in keyof STRUCT]: AutoProxy<STRUCT[name]>
+                            } & bC>
+                        )
+                    ) : never
+                )
+            )
+        ) : (
+            never
         )
     )
 )
