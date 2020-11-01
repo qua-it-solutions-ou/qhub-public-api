@@ -27,10 +27,7 @@ export interface LineRegistration<ARGS extends Arguments, T, META> extends Line<
     meta: META
 }
 
-//TODO: use Capitalize<N>
-export type LineName<N extends string = string> = N extends /*Capitalize<N>*/string ? (
-    N extends '' ? never : N
-) : never
+export type LineName<N extends string = string> = N;
 
 
 export interface Highway<ARGS extends Arguments, T> {
@@ -44,17 +41,17 @@ export interface Highway<ARGS extends Arguments, T> {
     lines: Line<ARGS, T>[];
     lines$: Observable<Line<ARGS, T>[]>;
     children$: Observable<{
-        [NAME in string as LineName<NAME>]: Highway<Arguments, any>
+        [NAME in string]: Highway<Arguments, any>
     }>;
     children: {
-        [NAME in string as LineName<NAME>]: Highway<Arguments, any>
+        [NAME in string]: Highway<Arguments, any>
     };
 
     register<META>(driver: LineDriver<ARGS, T>, meta?: META): LineRegistration<ARGS, T, META>;
 }
 
 export type AutoProxyStructMap = {
-    [NAME in string as LineName<NAME>]: AutoProxyStruct
+    [NAME in string]: AutoProxyStruct
 }
 
 export type AutoProxyStruct =
@@ -66,8 +63,6 @@ export type AutoProxy<STRUCT extends AutoProxyStruct> = (
             STRUCT extends AutoProxyStructMap ? (
                 (
                     Highway<Arguments, any> & {
-                        [NAME in LineName<Extract<keyof STRUCT, string>> as `_${NAME}`]: AutoProxy<STRUCT[NAME]>
-                    } & {
                         [NAME in LineName<Extract<keyof STRUCT, string>>]: AutoProxy<STRUCT[NAME]>
                     }
                 )
