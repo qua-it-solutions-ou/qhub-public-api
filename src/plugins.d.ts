@@ -15,21 +15,21 @@ export interface PluginInfo {
 }
 
 export interface StaticPluginManagerHighway extends AutoProxy<{
-    ActiveInstance(name: string, version?: string): Observable<PluginInstanceIdentifier | null>;
+    ActiveInstance(name: string, version?: string): PluginInstanceIdentifier | null;
     Instance: {
-        Info(id: PluginInstanceIdentifier): Promise<PluginInfo>;
-        Active(id: PluginInstanceIdentifier): Observable<boolean>;
-        Ready(id: PluginInstanceIdentifier): Observable<boolean>;
-        Pack(id: PluginInstanceIdentifier): Promise<Buffer>;
-        PackHash(id: PluginInstanceIdentifier): Promise<string>;
-        Resource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
+        Info(id: PluginInstanceIdentifier): PluginInfo;
+        Active(id: PluginInstanceIdentifier): boolean;
+        Ready(id: PluginInstanceIdentifier): boolean;
+        Pack(id: PluginInstanceIdentifier): Buffer;
+        PackHash(id: PluginInstanceIdentifier): string;
+        Resource(id: PluginInstanceIdentifier, resourcePath: string): ResourceFile | undefined;
     },
-    ActiveInstances(): Observable<PluginInstanceIdentifier[]>;
+    ActiveInstances(): PluginInstanceIdentifier[];
 }> {}
 
 export type PluginManagerHighway = AutoProxy<{
-    Plug(pack: Buffer): Promise<PluginInstanceIdentifier>;
-    Unplug(nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
+    Plug(pack: Buffer): PluginInstanceIdentifier;
+    Unplug(nameOrIdentifier: string | PluginInstanceIdentifier): void;
 }> & StaticPluginManagerHighway;
 
 export type PluginRepositoryIdentifier = string;
@@ -37,15 +37,12 @@ export type PluginRepositoryIdentifier = string;
 export interface AvailablePluginInfo extends PluginInfo {
 }
 
-export type RepositoryPluginManagerHighway = AutoProxy<{
-    Repositories(): Observable<PluginRepositoryIdentifier[]>,
-    Repository: {
-       [RepositoryIdentifier in PluginRepositoryIdentifier]: PluginRepositoryHighway
-    }
-}> & PluginManagerHighway;
+export interface RepositoryPluginManagerHighway extends AutoProxy<{
+    Repositories(): PluginRepositoryIdentifier[]
+}>, PluginManagerHighway {}
 
 export interface PluginRepositoryHighway extends AutoProxy<{
-    AvailablePlugins(): Observable<AvailablePluginInfo[]>;
+    AvailablePlugins(): AvailablePluginInfo[];
     PluginPack(name: string, version: string): Readable;
-    PluginIcon(name: string, version: string): Promise<Buffer>;
+    PluginIcon(name: string, version: string): Buffer;
 }> {}

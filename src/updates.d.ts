@@ -18,9 +18,9 @@ export type UpdateStatus = {
 
 export interface UpdateManagerHighway extends AutoProxy<{
     Version: {
-        Current(): Promise<HubVersion>,
-        Live(): Observable<HubVersion>
+        Current(): HubVersion,
+        Live(): HubVersion
     },
-    Status(): Observable<UpdateStatus>,
-    TriggerUpdate(): Promise<void>
+    Status(): UpdateStatus,
+    TriggerUpdate(): void
 }> {}

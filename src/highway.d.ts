@@ -1,106 +1,76 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
 
-export type LineResult<T> = Promise<T> | Observable<T> | (T extends Stream ? T : never);
-
-export type LineDefault = 'promise' | 'observable' | 'stream';
-export type ExtractLineDefault<R extends LineResult<any>> = (
-    R extends Promise<any> ? (
-        'promise'
-    ) : (
-        R extends Observable<any> ? (
-            'observable'
-        ) : (
-            R extends Stream ? (
-                'stream'
-            ) : (
-                never
-            )
+export type LineResult<T> = T extends any ? (
+    Highway<Arguments, any> | Stream | Promise<any> | Observable<any>
+) : (
+    T extends Highway<Arguments, any> ? T : (
+        T extends Stream ? T : (
+            Promise<T> | Observable<T>
         )
     )
 );
-export type ExtractResultType<R extends LineResult<any>> = (
-    R extends Promise<infer T> ? (
-        T
-    ) : (
-        R extends Observable<infer T> ? (
-            T
-        ) : (
-            R extends Stream ? (
-                R
-            ) : (
-                never
-            )
-        )
-    )
-);
-export type BuildLineResult<D extends LineDefault, T> = (
-    D extends 'promise' ? (
-        Promise<T>
-    ) : (
-        D extends 'observable' ? (
-            Observable<T>
-        ) : (
-            D extends 'stream' ? (
-                (T extends Stream ? T : never)
-            ) : (
-                never
-            )
-        )
-    )
-)
 
-export type LineDriver<ARGS extends Arguments, D extends LineDefault, T> =
-    (...args: ARGS) => BuildLineResult<D, T>;
+export type LineDriver<ARGS extends Arguments, T> =
+    (...args: ARGS) => LineResult<T>;
 
-export interface Line<ARGS extends Arguments, D extends LineDefault, T> {
-    (...args: ARGS): BuildLineResult<D, T>,
-    lineDefault: LineDefault,
+export interface Line<ARGS extends Arguments, T> {
+    observe(...args: ARGS): Extract<LineResult<T>, Observable<any>>;
+    request(...args: ARGS): Extract<LineResult<T>, Promise<any>>;
+    stream(...args: ARGS): Extract<LineResult<T>, Stream>;
+    highway(...args: ARGS): Extract<LineResult<T>, Highway<Arguments, any>>;
+
     meta?: any,
     key: number
 }
 
-export interface LineRegistration<ARGS extends Arguments, D extends LineDefault, T, META> extends Line<ARGS, D, T> {
+export interface LineRegistration<ARGS extends Arguments, T, META> extends Line<ARGS, T> {
     unregister(): void;
     meta: META
 }
 
-export interface Highway<ARGS extends Arguments, D extends LineDefault, T> extends Iterable<Line<ARGS, D, T>> {
-    _: {
-        [name: string]: Highway<Arguments, LineDefault, any>
+//TODO: use Capitalize<N>
+export type LineName<N extends string = string> = N extends /*Capitalize<N>*/string ? (
+    N extends '' ? never : N
+) : never
+
+
+export interface Highway<ARGS extends Arguments, T> {
+    child<NAME extends string>(name: LineName<NAME>): Highway<Arguments, any>;
+
+    observe(...args: ARGS): Extract<LineResult<T>, Observable<any>>;
+    request(...args: ARGS): Extract<LineResult<T>, Promise<any>>;
+    stream(...args: ARGS): Extract<LineResult<T>, Stream>;
+    highway(...args: ARGS): Extract<LineResult<T>, Highway<Arguments, any>>;
+
+    lines: Line<ARGS, T>[];
+    lines$: Observable<Line<ARGS, T>[]>;
+    children$: Observable<{
+        [NAME in string as LineName<NAME>]: Highway<Arguments, any>
+    }>;
+    children: {
+        [NAME in string as LineName<NAME>]: Highway<Arguments, any>
     };
 
-    lines$: Observable<Line<ARGS, D, T>[]>;
-    children$: Observable<{
-        [name: string]: Highway<Arguments, any, LineResult<any>>
-    }>;
-
-    new <META>(lineDefault: D, driver: LineDriver<ARGS, D, T>, meta?: META): LineRegistration<ARGS, D, T, META>
-    (...args: ARGS): BuildLineResult<D, T>
+    register<META>(driver: LineDriver<ARGS, T>, meta?: META): LineRegistration<ARGS, T, META>;
 }
 
-export interface AutoProxyStructMap {
-    [name: string]: AutoProxyStruct
+export type AutoProxyStructMap = {
+    [NAME in string as LineName<NAME>]: AutoProxyStruct
 }
 
 export type AutoProxyStruct =
-    Highway<Arguments, LineDefault, any> | LineDriver<Arguments, LineDefault, any> | AutoProxyStructMap;
-
-export interface CustomHighway<ARGS extends Arguments, D extends LineDefault, T, C extends {
-    [name: string]: Highway<Arguments, LineDefault, any>
-}> extends Highway<ARGS, D, T> {
-    _: C;
-}
+    Highway<Arguments, any> | ((...args: Arguments) => any) | AutoProxyStructMap;
 
 export type AutoProxy<STRUCT extends AutoProxyStruct> = (
-    STRUCT extends Highway<Arguments, LineDefault, any> ? STRUCT : (
-        STRUCT extends (...args: infer Args) => infer R ? Highway<Args, ExtractLineDefault<R>, ExtractResultType<R>> : (
+    STRUCT extends Highway<Arguments, any> ? STRUCT : (
+        STRUCT extends (...args: infer Args) => infer T ? Highway<Args, T> : (
             STRUCT extends AutoProxyStructMap ? (
                 (
-                    Highway<Arguments, LineDefault, any> & {
-                        _: {
-                            [name in keyof STRUCT]: AutoProxy<STRUCT[name]>
-                        }
+                    Highway<Arguments, any> & {
+                        [NAME in LineName<Extract<keyof STRUCT, string>> as `_${NAME}`]: AutoProxy<STRUCT[NAME]>
+                    } & {
+                        [NAME in LineName<Extract<keyof STRUCT, string>>]: AutoProxy<STRUCT[NAME]>
                     }
                 )
             ) : never
