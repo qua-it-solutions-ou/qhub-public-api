@@ -1,28 +1,17 @@
 import {Observable} from 'rxjs';
-import {Stream} from 'stream';
 
-export type LineResult<T> = Promise<T> | Observable<T> | (
-    T extends Highway<Arguments, any> ? T : (
-        T extends Stream ? T : (
-            never
-        )
-    )
-);
+export type LineDriver<ARGS extends any[], T> =
+    (...args: ARGS) => Observable<T> | Promise<T> | T;
 
-export type LineDriver<ARGS extends Arguments, T> =
-    (...args: ARGS) => LineResult<T>;
-
-export interface Line<ARGS extends Arguments, T> {
-    observe(...args: ARGS): Extract<LineResult<T>, Observable<any>>;
-    request(...args: ARGS): Extract<LineResult<T>, Promise<any>>;
-    stream(...args: ARGS): Extract<LineResult<T>, Stream>;
-    highway(...args: ARGS): Extract<LineResult<T>, Highway<Arguments, any>>;
+export interface Line<ARGS extends any[], T> {
+    observe(...args: ARGS): Observable<T>;
+    request(...args: ARGS): Promise<T>;
 
     meta?: any,
     key: number
 }
 
-export interface LineRegistration<ARGS extends Arguments, T, META> extends Line<ARGS, T> {
+export interface LineRegistration<ARGS extends any[], T, META> extends Line<ARGS, T> {
     unregister(): void;
     meta: META
 }
@@ -30,21 +19,19 @@ export interface LineRegistration<ARGS extends Arguments, T, META> extends Line<
 export type LineName<N extends string = string> = N;
 
 
-export interface Highway<ARGS extends Arguments, T> {
-    child<NAME extends string>(name: LineName<NAME>): Highway<Arguments, any>;
+export interface Highway<ARGS extends any[], T> {
+    child<NAME extends string>(name: LineName<NAME>): Highway<any[], any>;
 
-    observe(...args: ARGS): Extract<LineResult<T>, Observable<any>>;
-    request(...args: ARGS): Extract<LineResult<T>, Promise<any>>;
-    stream(...args: ARGS): Extract<LineResult<T>, Stream>;
-    highway(...args: ARGS): Extract<LineResult<T>, Highway<Arguments, any>>;
+    observe(...args: ARGS): Observable<T>;
+    request(...args: ARGS): Promise<T>;
 
     lines: Line<ARGS, T>[];
     lines$: Observable<Line<ARGS, T>[]>;
     children$: Observable<{
-        [NAME in string]: Highway<Arguments, any>
+        [NAME in string]: Highway<any[], any>
     }>;
     children: {
-        [NAME in string]: Highway<Arguments, any>
+        [NAME in string]: Highway<any[], any>
     };
 
     register<META>(driver: LineDriver<ARGS, T>, meta?: META): LineRegistration<ARGS, T, META>;
@@ -55,14 +42,14 @@ export type AutoProxyStructMap = {
 }
 
 export type AutoProxyStruct =
-    Highway<Arguments, any> | ((...args: Arguments) => any) | AutoProxyStructMap;
+    Highway<any[], any> | ((...args: any[]) => any) | AutoProxyStructMap;
 
 export type AutoProxy<STRUCT extends AutoProxyStruct> = (
-    STRUCT extends Highway<Arguments, any> ? STRUCT : (
+    STRUCT extends Highway<any[], any> ? STRUCT : (
         STRUCT extends (...args: infer Args) => infer T ? Highway<Args, T> : (
             STRUCT extends AutoProxyStructMap ? (
                 (
-                    Highway<Arguments, any> & {
+                    Highway<any[], any> & {
                         [NAME in LineName<Extract<keyof STRUCT, string>>]: AutoProxy<STRUCT[NAME]>
                     }
                 )
@@ -70,5 +57,3 @@ export type AutoProxy<STRUCT extends AutoProxyStruct> = (
         )
     )
 )
-
-export type Arguments = any[];
