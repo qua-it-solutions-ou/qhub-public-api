@@ -1,9 +1,7 @@
 import {Observable} from 'rxjs';
 import {Stream} from 'stream';
 
-export type LineResult<T> = T extends any ? (
-    Highway<Arguments, any> | Stream | Promise<any> | Observable<any>
-) : (
+export type LineResult<T> = (
     T extends Highway<Arguments, any> ? T : (
         T extends Stream ? T : (
             Promise<T> | Observable<T>
