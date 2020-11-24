@@ -1,5 +1,5 @@
-import {HubPluginHighway, NodePluginHighway, UIPluginHighway} from "./plugin-function";
+import {HubPluginAPI, NodePluginAPI, UIPluginAPI} from "./plugin-function";
 
-export const highway: UIPluginHighway | NodePluginHighway | HubPluginHighway;
+export const api: UIPluginAPI | NodePluginAPI | HubPluginAPI;
 
 export function setReady(ready: boolean): void;

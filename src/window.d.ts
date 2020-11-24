@@ -1,11 +1,10 @@
-import {AutoProxy} from './highway';
-import {Observable} from 'rxjs';
+import {SubjectTreeProxy} from "plugment";
 
 export type WindowIdentifier = string;
 export type WindowHash = string;
 
-export interface WindowManagerHighway extends AutoProxy<{
-    Control(windowID: WindowIdentifier, command: 'minimize' | 'maximize' | 'unmaximize' | 'restore' | 'close'): void;
-    State(windowID: WindowIdentifier): 'minimized' | 'maximized' | 'windowed';
-    Create(parentWindowID: WindowIdentifier, hash: WindowHash): WindowIdentifier;
+export interface WindowManagerAPI extends SubjectTreeProxy<never, never, {
+    control(windowID: WindowIdentifier, command: 'minimize' | 'maximize' | 'unmaximize' | 'restore' | 'close'): Promise<void>;
+    getState(windowID: WindowIdentifier): Promise<'minimized' | 'maximized' | 'windowed'>;
+    create(parentWindowID: WindowIdentifier, hash: WindowHash): Promise<WindowIdentifier>;
 }> {}

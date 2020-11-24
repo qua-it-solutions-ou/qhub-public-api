@@ -1,4 +1,4 @@
-import {AutoProxy} from './highway';
+import {SubjectTreeProxy} from "plugment";
 import {Observable} from "rxjs";
 
 export type HubVersion = string;
@@ -16,11 +16,9 @@ export type UpdateStatus = {
     phase: 'error'
 };
 
-export interface UpdateManagerHighway extends AutoProxy<{
-    Version: {
-        Current(): HubVersion,
-        Live(): HubVersion
-    },
-    Status(): UpdateStatus,
-    TriggerUpdate(): void
+export interface UpdateManagerAPI extends SubjectTreeProxy<never, never, {
+    getCurrentVersion(): Promise<HubVersion>,
+    observeLiveVersion(): Promise<Observable<HubVersion>>
+    observeStatus(): Promise<Observable<UpdateStatus>>,
+    triggerUpdate(): Promise<void>
 }> {}

@@ -1,6 +1,6 @@
 import {Domains} from './domains';
-import {AutoProxy} from "./highway";
 import {Observable} from "rxjs";
+import {SubjectTreeProxy} from "plugment";
 
 export type CertificationErrorCode = 'unknown' | 'challenge-failed' | 'no-subscription';
 export type CertificationStatus = {
@@ -20,6 +20,6 @@ export type CertificationStatus = {
     code: 'no-domain'
 };
 
-export interface CertificationManagerHighway extends AutoProxy<{
-    Status(): CertificationStatus
+export interface CertificationManagerHighway extends SubjectTreeProxy<never, never, {
+    observeStatus(): Promise<Observable<CertificationStatus>>
 }> {}

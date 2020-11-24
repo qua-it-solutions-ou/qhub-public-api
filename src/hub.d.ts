@@ -1,3 +1,3 @@
-import {HubPluginHighway} from "./plugin-function";
+import {HubPluginAPI} from "./plugin-function";
 
-export const hubHighway: HubPluginHighway;
+export const hubAPI: HubPluginAPI;

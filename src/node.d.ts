@@ -1,3 +1,3 @@
-import {NodePluginHighway} from "./plugin-function";
+import {NodePluginAPI} from "./plugin-function";
 
-export const nodeHighway: NodePluginHighway;
+export const nodeAPI: NodePluginAPI;

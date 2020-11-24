@@ -1,9 +1,9 @@
-import {UIPluginHighway} from "./plugin-function";
+import {UIPluginAPI} from "./plugin-function";
 import {WindowIdentifier} from "./window";
 
 export type ResponsiveSize = 'smaller' | 'larger';
 
-export function useHighway(): UIPluginHighway;
+export function useAPI(): UIPluginAPI;
 export function useResponsiveSize(): ResponsiveSize;
 
 export function useTitle(title: string | undefined): void;
@@ -13,6 +13,6 @@ export function useTitle(): [
 
 export function useWindowID(): WindowIdentifier;
 
-export const uiHighway: UIPluginHighway;
+export const uiAPI: UIPluginAPI;
 
 export const windowIdentifier: WindowIdentifier;

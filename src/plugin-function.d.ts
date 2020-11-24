@@ -1,31 +1,31 @@
-import {AutoProxy} from './highway';
-import {PluginManagerHighway, RepositoryPluginManagerHighway, StaticPluginManagerHighway} from './plugins';
+import {PluginManagerAPI, StaticPluginManagerAPI} from './plugins';
 import {ConnectionIdentifier, ConnectionManagerHighway} from './connections';
 import {DomainsHighway} from './domains';
-import {WindowManagerHighway} from './window';
+import {WindowManagerAPI} from './window';
 import {CertificationManagerHighway} from './certifications';
-import {UpdateManagerHighway} from './updates';
+import {UpdateManagerAPI} from './updates';
+import {SubjectTreeProxy} from "plugment";
 
-export interface UIPluginHighway extends AutoProxy<{
-    UIPluginManager: StaticPluginManagerHighway;
-}>, HubPluginHighway {
+export interface UIPluginAPI extends SubjectTreeProxy<never, never, {
+    UIPluginManager: StaticPluginManagerAPI;
+}>, HubPluginAPI {
 }
 
-export interface HubPluginHighway extends AutoProxy<{
-    PluginManager: RepositoryPluginManagerHighway,
+export interface HubPluginAPI extends SubjectTreeProxy<never, never, {
+    PluginManager: PluginManagerAPI,
     ConnectionManager: ConnectionManagerHighway,
-    Connection: (connectionIdentifier: ConnectionIdentifier) => ConnectionHighway,
+    Connection: (connectionIdentifier: ConnectionIdentifier) => ConnectionAPI,
     Domains: DomainsHighway,
-    WindowManager: WindowManagerHighway,
+    WindowManager: WindowManagerAPI,
     CertificationManager: CertificationManagerHighway,
-    UpdateManager: UpdateManagerHighway
+    UpdateManager: UpdateManagerAPI
 }> {}
 
-export interface NodeHighway extends AutoProxy<{
-    PluginManage: PluginManagerHighway;
+export interface NodeAPI extends SubjectTreeProxy<never, never, {
+    PluginManager: PluginManagerAPI;
 }> {}
-export interface NodePluginHighway extends NodeHighway {
+export interface NodePluginAPI extends NodeAPI {
 }
 
-export interface ConnectionHighway extends NodeHighway {
+export interface ConnectionAPI extends NodeAPI {
 }

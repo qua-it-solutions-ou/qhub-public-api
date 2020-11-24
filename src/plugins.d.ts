@@ -1,6 +1,5 @@
-import {AutoProxy} from './highway';
-import {Readable} from "stream";
 import {Observable} from "rxjs";
+import {SubjectTreeProxy} from "plugment";
 
 export interface ResourceDirectory {
     [entry: string]: Resource
@@ -14,35 +13,20 @@ export interface PluginInfo {
     version: string
 }
 
-export interface StaticPluginManagerHighway extends AutoProxy<{
-    ActiveInstance(name: string, version?: string): PluginInstanceIdentifier | null;
-    Instance: {
-        Info(id: PluginInstanceIdentifier): PluginInfo;
-        Active(id: PluginInstanceIdentifier): boolean;
-        Ready(id: PluginInstanceIdentifier): boolean;
-        Pack(id: PluginInstanceIdentifier): Buffer;
-        PackHash(id: PluginInstanceIdentifier): string;
-        Resource(id: PluginInstanceIdentifier, resourcePath: string): ResourceFile | undefined;
+export interface StaticPluginManagerAPI extends SubjectTreeProxy<never, never, {
+    observeActiveInstance(name: string, version?: string): Promise<Observable<PluginInstanceIdentifier | null>>;
+    instance: {
+        getInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
+        observeActive(id: PluginInstanceIdentifier): Promise<Observable<boolean>>;
+        observeReady(id: PluginInstanceIdentifier): Promise<Observable<boolean>>;
+        getPack(id: PluginInstanceIdentifier): Promise<Buffer>;
+        getPackHash(id: PluginInstanceIdentifier): Promise<string>;
+        getResource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
     },
-    ActiveInstances(): PluginInstanceIdentifier[];
+    observeActiveInstances(): Promise<Observable<PluginInstanceIdentifier[]>>;
 }> {}
 
-export type PluginManagerHighway = AutoProxy<{
-    Plug(pack: Buffer): PluginInstanceIdentifier;
-    Unplug(nameOrIdentifier: string | PluginInstanceIdentifier): void;
-}> & StaticPluginManagerHighway;
-
-export type PluginRepositoryIdentifier = string;
-
-export interface AvailablePluginInfo extends PluginInfo {
-}
-
-export interface RepositoryPluginManagerHighway extends AutoProxy<{
-    Repositories(): PluginRepositoryIdentifier[]
-}>, PluginManagerHighway {}
-
-export interface PluginRepositoryHighway extends AutoProxy<{
-    AvailablePlugins(): AvailablePluginInfo[];
-    PluginPack(name: string, version: string): Readable;
-    PluginIcon(name: string, version: string): Buffer;
-}> {}
+export type PluginManagerAPI = SubjectTreeProxy<never, never, {
+    plug(pack: Buffer): Promise<PluginInstanceIdentifier>;
+    unplug(nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
+}> & StaticPluginManagerAPI;
