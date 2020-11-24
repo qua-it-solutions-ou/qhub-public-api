@@ -20,7 +20,7 @@
     "@types/react": "^17",
     "glob": "^7",
     "jszip": "^3",
-    "plugment": "^0.0.3",
+    "plugment": "^0.0.4",
     "react": "^17",
     "rxjs": "^6",
     "yargs": "^16"
