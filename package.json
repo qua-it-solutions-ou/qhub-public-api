@@ -2,7 +2,7 @@
   "name": "qhub-public-api",
   "repository": "https://github.com/qua-it-solutions-ou/qhub-public-api",
   "license": "UNLICENSED",
-  "version": "0.0.0-53",
+  "version": "0.0.0-54",
   "types": "src/index-typings.d.ts",
   "main": "lib/index.js",
   "bin": {
@@ -14,14 +14,13 @@
     "lib/**/*.js"
   ],
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
+    "build": "tsc"
   },
   "dependencies": {
     "@types/react": "^17",
     "glob": "^7",
     "jszip": "^3",
-    "plugment": "^0.0.1-0",
+    "plugment": "^0.0.3",
     "react": "^17",
     "rxjs": "^6",
     "yargs": "^16"

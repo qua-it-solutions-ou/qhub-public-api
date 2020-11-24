@@ -17,8 +17,8 @@ export type UpdateStatus = {
 };
 
 export interface UpdateManagerAPI extends SubjectTreeProxy<never, never, {
-    getCurrentVersion(): Promise<HubVersion>,
-    observeLiveVersion(): Promise<Observable<HubVersion>>
-    observeStatus(): Promise<Observable<UpdateStatus>>,
-    triggerUpdate(): Promise<void>
+    getCurrentVersion(): HubVersion,
+    observeLiveVersion(): HubVersion,
+    observeStatus(): UpdateStatus,
+    triggerUpdate(): void
 }> {}
