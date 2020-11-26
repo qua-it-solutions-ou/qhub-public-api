@@ -9,6 +9,4 @@ export function useTitle(): [
         string | undefined, (newTitle: string | undefined) => void
 ];
 
-export function useWindowID(): WindowIdentifier;
-
 export const windowIdentifier: WindowIdentifier;
