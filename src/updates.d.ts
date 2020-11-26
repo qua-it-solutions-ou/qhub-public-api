@@ -1,4 +1,3 @@
-import {SubjectTreeProxy} from "plugment";
 import {Observable} from "rxjs";
 
 export type HubVersion = string;
@@ -16,9 +15,11 @@ export type UpdateStatus = {
     phase: 'error'
 };
 
-export interface UpdateManagerAPI extends SubjectTreeProxy<never, never, {
-    getCurrentVersion(): HubVersion,
-    observeLiveVersion(): HubVersion,
-    observeStatus(): UpdateStatus,
-    triggerUpdate(): void
-}> {}
+export interface UpdateManager {
+    getCurrentVersion(): Promise<HubVersion>;
+    observeLiveVersion(): Observable<HubVersion>;
+    observeStatus(): Observable<UpdateStatus>;
+    triggerUpdate(): Promise<void>;
+}
+
+export const updateManager: UpdateManager;

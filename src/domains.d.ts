@@ -1,10 +1,10 @@
-import {SubjectTreeProxy} from "plugment";
+import {Observable} from "rxjs";
 
 export type Domain = string;
 export type Domains = Domain[];
 
-export interface DomainsHighway extends SubjectTreeProxy<never, never, {
-    getActives(): Domains;
-    reload(): void;
-    supply(): Domains;
-}> {}
+export interface DomainManager {
+    observeActiveDomains(): Observable<Domains>;
+}
+
+export const domainManager: DomainManager;

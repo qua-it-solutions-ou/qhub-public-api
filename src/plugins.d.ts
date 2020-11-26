@@ -1,5 +1,4 @@
 import {Observable} from "rxjs";
-import {SubjectTreeProxy} from "plugment";
 
 export interface ResourceDirectory {
     [entry: string]: Resource
@@ -13,20 +12,24 @@ export interface PluginInfo {
     version: string
 }
 
-export interface StaticPluginManagerAPI extends SubjectTreeProxy<never, never, {
-    observeActiveInstance(name: string, version?: string): PluginInstanceIdentifier | null;
-    instance: {
-        getInfo(id: PluginInstanceIdentifier): PluginInfo;
-        observeActive(id: PluginInstanceIdentifier): boolean;
-        observeReady(id: PluginInstanceIdentifier): boolean;
-        getPack(id: PluginInstanceIdentifier): Buffer;
-        getPackHash(id: PluginInstanceIdentifier): string;
-        getResource(id: PluginInstanceIdentifier, resourcePath: string): ResourceFile | undefined;
-    },
-    observeActiveInstances(): PluginInstanceIdentifier[];
-}> {}
+export interface StaticPluginManager {
+    observeActiveInstance(name: string, version?: string): Promise<PluginInstanceIdentifier | null>;
 
-export type PluginManagerAPI = SubjectTreeProxy<never, never, {
-    plug(pack: Buffer): PluginInstanceIdentifier;
-    unplug(nameOrIdentifier: string | PluginInstanceIdentifier): void;
-}> & StaticPluginManagerAPI;
+    instance: {
+        getInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
+        observeActive(id: PluginInstanceIdentifier): Observable<boolean>;
+        observeReady(id: PluginInstanceIdentifier): Observable<boolean>;
+        getPack(id: PluginInstanceIdentifier): Promise<Buffer>;
+        getPackHash(id: PluginInstanceIdentifier): Promise<string>;
+        getResource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
+    },
+
+    observeActiveInstances(): Observable<PluginInstanceIdentifier[]>;
+}
+
+export interface PluginManager extends StaticPluginManager {
+    plug(pack: Buffer): Promise<PluginInstanceIdentifier>;
+    unplug(nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
+}
+
+export const pluginManager: PluginManager;

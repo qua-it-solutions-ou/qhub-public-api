@@ -1,5 +1,4 @@
 import {Domains} from './domains';
-import {SubjectTreeProxy} from "plugment";
 
 export type CertificationErrorCode = 'unknown' | 'challenge-failed' | 'no-subscription';
 export type CertificationStatus = {
@@ -19,6 +18,8 @@ export type CertificationStatus = {
     code: 'no-domain'
 };
 
-export interface CertificationManagerHighway extends SubjectTreeProxy<never, never, {
-    observeStatus(): CertificationStatus
-}> {}
+export interface CertificationManager {
+    observeStatus(): CertificationStatus;
+}
+
+export const certificationManager: CertificationManager;
