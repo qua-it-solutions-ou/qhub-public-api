@@ -5,13 +5,13 @@ export type MessageChannel = string;
 
 export interface Message {
     data: any;
-    sender: MessageAddress,
+    sender?: MessageAddress,
     target: MessageAddress,
     channel: MessageChannel
 }
 
 export interface MessageFilter {
-    sender?: MessageAddress | ((sender: MessageAddress) => boolean),
+    sender?: MessageAddress | ((sender?: MessageAddress) => boolean),
     target?: MessageAddress | ((target: MessageAddress) => boolean),
     channel?: MessageChannel | ((channel: MessageChannel) => boolean)
 }

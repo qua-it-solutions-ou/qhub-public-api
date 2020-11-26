@@ -1,4 +1,5 @@
 export * from './message-broker';
+export * from './message-addressing';
 export * from './connections';
 export * from './plugins';
 export * from './domains';
