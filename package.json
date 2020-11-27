@@ -2,7 +2,7 @@
   "name": "qhub-public-api",
   "repository": "https://github.com/qua-it-solutions-ou/qhub-public-api",
   "license": "UNLICENSED",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "types": "src/index-typings.d.ts",
   "main": "lib/index.js",
   "bin": {
