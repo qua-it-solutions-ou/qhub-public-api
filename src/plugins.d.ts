@@ -15,14 +15,12 @@ export interface PluginInfo {
 export interface StaticPluginManager {
     observeActiveInstance(name: string, version?: string): Promise<PluginInstanceIdentifier | null>;
 
-    instance: {
-        getInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
-        observeActive(id: PluginInstanceIdentifier): Observable<boolean>;
-        observeReady(id: PluginInstanceIdentifier): Observable<boolean>;
-        getPack(id: PluginInstanceIdentifier): Promise<Buffer>;
-        getPackHash(id: PluginInstanceIdentifier): Promise<string>;
-        getResource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
-    },
+    getInstanceInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
+    observeInstanceIfActive(id: PluginInstanceIdentifier): Observable<boolean>;
+    observeInstanceIfReady(id: PluginInstanceIdentifier): Observable<boolean>;
+    getInstancePack(id: PluginInstanceIdentifier): Promise<Buffer>;
+    getInstancePackHash(id: PluginInstanceIdentifier): Promise<string>;
+    getInstanceResource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
 
     observeActiveInstances(): Observable<PluginInstanceIdentifier[]>;
 }

@@ -1,4 +1,5 @@
 import {Domains} from './domains';
+import {Observable} from "rxjs";
 
 export type CertificationErrorCode = 'unknown' | 'challenge-failed' | 'no-subscription';
 export type CertificationStatus = {
@@ -19,7 +20,7 @@ export type CertificationStatus = {
 };
 
 export interface CertificationManager {
-    observeStatus(): CertificationStatus;
+    observeStatus(): Observable<CertificationStatus>;
 }
 
 export const certificationManager: CertificationManager;
