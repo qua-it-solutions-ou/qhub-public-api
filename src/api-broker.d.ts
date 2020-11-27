@@ -1,12 +1,15 @@
 import {Observable} from "rxjs";
 
-export type APIRequestHandler = (action: string, input: Observable<any>) => Observable<any>;
-
-export interface RequestOnlyAPIBroker {
+export interface APIClient {
     request(action: string, input: Observable<any>): Observable<any>;
 }
 
-export interface APIBroker extends RequestOnlyAPIBroker {
-    register(action: string, handler: APIRequestHandler): void;
-    unregister(action: string, handler: APIRequestHandler): void;
+export type APIListener = (action: string, input: Observable<any>) => Observable<any>;
+
+export interface APIListenerEntry {
+    unregister(): void;
+}
+
+export interface APIServer {
+    register(action: string, handler: APIListener): APIListenerEntry;
 }
