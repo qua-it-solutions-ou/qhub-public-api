@@ -13,7 +13,7 @@ export interface PluginInfo {
 }
 
 export interface StaticPluginManager {
-    observeActiveInstance(name: string, version?: string): Promise<PluginInstanceIdentifier | null>;
+    observeActiveInstance(name: string, version?: string): Observable<PluginInstanceIdentifier | null>;
 
     getInstanceInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
     observeInstanceIfActive(id: PluginInstanceIdentifier): Observable<boolean>;
