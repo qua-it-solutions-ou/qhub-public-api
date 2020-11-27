@@ -4,7 +4,7 @@ export interface APIClient {
     request(action: string, ...args: any[]): Observable<any>;
 }
 
-export type APIListener = (...args: any[]) => Observable<any>;
+export type APIListener = (...args: any[]) => Observable<any> | Promise<any> | any;
 
 export interface APIListenerEntry {
     unregister(): void;

@@ -1,5 +1,4 @@
 export * from './api-broker';
-export * from './api-addressing';
 export * from './connections';
 export * from './plugins';
 export * from './domains';
