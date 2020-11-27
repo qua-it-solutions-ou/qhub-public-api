@@ -1,10 +1,10 @@
 import {Observable} from "rxjs";
 
 export interface APIClient {
-    request(action: string, input: Observable<any>): Observable<any>;
+    request(action: string, ...args: any[]): Observable<any>;
 }
 
-export type APIListener = (action: string, input: Observable<any>) => Observable<any>;
+export type APIListener = (...args: any[]) => Observable<any>;
 
 export interface APIListenerEntry {
     unregister(): void;
