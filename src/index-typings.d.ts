@@ -8,3 +8,4 @@ export * from './updates';
 export * from './ui';
 export * from './common';
 export * from './supervised';
+export * from './api-services';

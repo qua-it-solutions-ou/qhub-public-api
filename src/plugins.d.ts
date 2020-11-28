@@ -12,8 +12,8 @@ export interface PluginInfo {
     version: string
 }
 
-export interface StaticPluginManager {
-    observeActiveInstance(name: string, version?: string): Observable<PluginInstanceIdentifier | null>;
+export interface PluginManager {
+    observeActiveInstance(name: string, version?: string): Observable<PluginInstanceIdentifier | undefined>;
 
     getInstanceInfo(id: PluginInstanceIdentifier): Promise<PluginInfo>;
     observeInstanceIfActive(id: PluginInstanceIdentifier): Observable<boolean>;
@@ -23,9 +23,7 @@ export interface StaticPluginManager {
     getInstanceResource(id: PluginInstanceIdentifier, resourcePath: string): Promise<ResourceFile | undefined>;
 
     observeActiveInstances(): Observable<PluginInstanceIdentifier[]>;
-}
 
-export interface PluginManager extends StaticPluginManager {
     plug(pack: Buffer): Promise<PluginInstanceIdentifier>;
     unplug(nameOrIdentifier: string | PluginInstanceIdentifier): Promise<void>;
 }
